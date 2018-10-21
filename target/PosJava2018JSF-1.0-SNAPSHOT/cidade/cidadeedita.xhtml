@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <ui:composition template="/index.xhtml">
+        <ui:define name="body">
+            <p:growl autoUpdate="true" />
+            <p:messages autoUpdate="true"/>
+            <p:panel header="Cadastro de Cidade">
+                <h:form>
+                    <p:panelGrid columns="3">
+                        Nome:<p:inputText value="#{cidadeControle.cidade.nome}"
+                                          required="true"
+                                          requiredMessage="O nome é obrigatório!"
+                                          id="nome" size="50"/>
+                        <p:message for="nome"/> 
+                        Estado:<p:autoComplete value="#{cidadeControle.cidade.estado}" 
+                                               converter="#{cidadeControle.estadoConverter}"
+                                               completeMethod="#{cidadeControle.listaEstadosFiltrando}"
+                                               var="est"
+                                               itemLabel="#{est.nome}"
+                                               itemValue="#{est}"
+                                               forceSelection="true"
+                                               />
+                        <p:spacer/> 
+                        Cod. IBGE:<p:inputText value="#{cidadeControle.cidade.codigoIBGE}"
+                                               size="10"
+                                               />
+                        <p:spacer/>
+                        CEP:<p:inputMask value="#{cidadeControle.cidade.cep}" mask="99.999-999"
+                                         />
+                        <p:spacer/>
+                        <p:commandButton value="Salvar" 
+                                         actionListener="#{cidadeControle.salvar()}"
+                                         ajax="false"
+                                         action="cidadelista"/>
+                        <p:commandButton ajax="false" value="Voltar" action="cidadelista" immediate="true"/>
+                    </p:panelGrid>                    
+                    
+                </h:form>
+            </p:panel>
+        </ui:define>
+    </ui:composition>
+</html>
+

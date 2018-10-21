@@ -1,0 +1,116 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:composition template="/index.xhtml">
+        <ui:define name="body">
+            <p:growl autoUpdate="true" showDetail="true"/>
+            <p:messages autoUpdate="true" showDetail="true"/>
+            <p:panel header="Movimento de Venda">
+                <h:form>
+                    <p:panelGrid columns="2">
+                        Data venda:<p:calendar value="#{vendaControle.venda.dataVenda}"
+                                               pattern="dd/MM/yyyy" 
+                                               locale="pt_BR"
+                                               required="true"
+                                               requiredMessage="A data é obrigatória!"
+                                               id="datavenda"/>
+                        Cliente:<p:autoComplete value="#{vendaControle.venda.pessoa}" 
+                                                converter="#{vendaControle.pessoaConverter}"
+                                                completeMethod="#{vendaControle.listaPessoasFiltrando}"
+                                                var="pe"
+                                                itemLabel="#{pe.nome}"
+                                                itemValue="#{pe}"
+                                                forceSelection="true"
+                                                size="50"
+                                                />
+                        <p:outputLabel value="Total:" style="color: red"/>
+                        <h:outputText value="#{vendaControle.venda.valorTotal}"
+                                      style="color: red" 
+                                      id="total" 
+                                      converter="#{vendaControle.moneyConverter}"/>
+                    </p:panelGrid>              
+                    <p:panel header="Itens da Venda" id="painelItens">
+                        <p:panelGrid columns="2">
+                            Produto:<p:autoComplete value="#{vendaControle.itensVenda.produto}" 
+                                                    completeMethod="#{vendaControle.listaProdutosFiltrando}"
+                                                    var="prod"
+                                                    itemLabel="#{prod.nome}"
+                                                    itemValue="#{prod}"
+                                                    converter="#{vendaControle.produtoConverter}"
+                                                    forceSelection="true"
+                                                    size="50"
+                                                    >
+                                <p:ajax event="itemSelect" update="preco" listener="#{vendaControle.setaPrecoItem()}"/>
+                            </p:autoComplete>
+                            Preço:<p:inputText value="#{vendaControle.itensVenda.preco}" 
+                                               converter="#{vendaControle.moneyConverter}"
+                                               onkeydown="mascaraMonetaria(this)"
+                                               id="preco" 
+                                               size="20"/>
+                            Quantidade:<p:inputText value="#{vendaControle.itensVenda.quantidade}" 
+                                                    size="20"/>
+                            <p:commandButton value="Adicionar" 
+                                             actionListener="#{vendaControle.addItem()}" 
+                                             ajax="true" update="total painelItens"
+                                             />
+                        </p:panelGrid>
+                        <p:dataTable value="#{vendaControle.venda.itensVendas}"
+                                     var="item"
+                                     emptyMessage="Nenhum item adicionado!">
+                            <p:column headerText="Produto">
+                                #{item.produto.nome}
+                            </p:column>
+                            <p:column headerText="Preço">
+                                <h:outputText value="#{item.preco}" converter="#{vendaControle.moneyConverter}"/>
+                            </p:column>
+                            <p:column headerText="Quantidade">
+                                #{item.quantidade}
+                            </p:column>
+                            <p:column headerText="Subtotal">
+                                <h:outputText value="#{item.subTotal}" converter="#{vendaControle.moneyConverter}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                    <p:panel>
+                        <p:panelGrid columns="2">
+                            Quantidade Parcelas:<p:inputText value="#{vendaControle.nParcela}" 
+                                                             id="quantidadeParcelas" 
+                                                             size="20"/>
+                            <p:commandButton value="Adicionar" 
+                                             actionListener="#{vendaControle.addParcela()}" 
+                                             ajax="false" />                        
+
+                        </p:panelGrid>
+                        <p:dataTable value="#{vendaControle.venda.contasRecebers}"
+                                     var="parc"
+                                     emptyMessage="Nenhum item adicionado!">
+                            <p:column headerText="Data Lancamento">
+                                #{parc.dataLancamento}
+                            </p:column>
+                            <p:column headerText="Data Vencimento">
+                                <h:outputText value="#{parc.dataVencimento}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Numero Parcela">
+                                #{parc.numeroParcela}
+                            </p:column>   
+                        </p:dataTable>
+                    </p:panel>
+                    <p:commandButton value="Salvar" 
+                                     actionListener="#{vendaControle.salvar()}"
+                                     ajax="false"
+                                     action="vendalista"/>
+                    <p:commandButton ajax="false" value="Voltar" action="vendalista" immediate="true"/>
+
+
+                </h:form>
+            </p:panel>
+        </ui:define>
+    </ui:composition>
+</html>
+

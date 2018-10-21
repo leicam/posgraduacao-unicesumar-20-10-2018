@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:composition template="/index.xhtml">
+        <ui:define name="body">
+            <p:growl autoUpdate="true" />
+            <p:messages autoUpdate="true"/>
+            <p:panel header="Lista de ContasReceber">
+                <h:form>                  
+                    <p:dataTable value="#{contasReceberControle.listaContasRecebers}"
+                                 var="cr"
+                                 emptyMessage="Nenhum contasReceber cadastrado!">
+                        <p:column headerText="Data lançamento" filterBy="#{cr.dataLancamento}" filterMatchMode="contains"
+                                  sortBy="#{cr.dataLancamento}">
+                            <h:outputText value="#{cr.dataLancamento}">
+                                <f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR"/>
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Data Vencimento" filterBy="#{cr.dataVencimento}" filterMatchMode="contains"
+                                  sortBy="#{cr.dataVencimento}">
+                            <h:outputText value="#{cr.dataVencimento}">
+                                <f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR"/>
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Pessoa">
+                            #{cr.pessoa.nome}
+                        </p:column>
+                        <p:column headerText="Parcela">
+                            #{cr.numeroParcela}
+                        </p:column>
+                        <p:column headerText="Valor">
+                            #{cr.valor}
+                        </p:column>
+<!--                        <p:column headerText="Operações" width="100">
+                            <p:commandButton icon="ui-icon-pencil" ajax="false" 
+                                             actionListener="{contasReceberControle.editar(cr)}"
+                                             immediate="true"
+                                             action="contasReceberedita"/>
+                            <p:commandButton icon="ui-icon-trash" ajax="false" 
+                                             actionListener="{contasReceberControle.excluir(cr)}"
+                                             immediate="true"/>
+                        </p:column>-->
+                    </p:dataTable>
+                    <!--<p:commandButton ajax="false" value="Novo contasReceber" action="contasReceberedita" actionListener="{contasReceberControle.novo()}" immediate="true"/>-->
+                    <p:commandButton ajax="false" value="Voltar" action="/index" immediate="true"/>
+                </h:form>
+            </p:panel>
+        </ui:define>
+    </ui:composition>
+</html>
+
